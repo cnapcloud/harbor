@@ -15,8 +15,8 @@
 
 - Docker 20.10.10+
 - Docker Compose v2 (`docker compose version`)
-- Go 1.12+ (바이너리 직접 컴파일 시)
-- arm64 크로스 빌드 시: Docker Buildx + QEMU
+- Docker Buildx (멀티아치 빌드 및 manifest 생성 시)
+- Go 불필요 — 컴파일은 `golang:1.25.7` Docker 이미지 내에서 실행됨
 
 ---
 
@@ -65,18 +65,20 @@ cnapcloud/harbor-core:v2.15.10        ← manifest (arm64 + amd64)
 
 ```bash
 # amd64 image
-make compile VERSIONTAG=v2.15.10 GOARCH=amd64 
+make compile VERSIONTAG=v2.15.10 GOARCH=amd64
 make build \
   VERSIONTAG=v2.15.10 \
+  ARCH=amd64 \
   IMAGENAMESPACE=cnapcloud \
   BASEIMAGENAMESPACE=goharbor \
   BASEIMAGETAG=v2.15.0 \
   TRIVYFLAG=true   # Trivy 포함 시 true
 
 # arm64 image
-make compile VERSIONTAG=v2.15.10 GOARCH=arm64 
+make compile VERSIONTAG=v2.15.10 GOARCH=arm64
 make build \
   VERSIONTAG=v2.15.10 \
+  ARCH=arm64 \
   IMAGENAMESPACE=cnapcloud \
   BASEIMAGENAMESPACE=cnapcloud \
   BASEIMAGETAG=v2.15.10 \
