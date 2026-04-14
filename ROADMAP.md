@@ -1,32 +1,3 @@
-## cnapcloud/harbor Fork — Multiarch Additions
-
-This repository is forked from [goharbor/harbor](https://github.com/goharbor/harbor) at tag `v2.15.0`, with **arm64 / amd64 multi-architecture build support** added on the `multiarch` branch.
-
-### Summary of Changes
-
-| File | Change |
-|------|--------|
-| `Makefile` | Auto-detect `ARCH` via `uname -m`; branch Trivy download URL by architecture |
-| `make/photon/Makefile` | Add `PLATFORM` variable (`linux/arm64` \| `linux/amd64`); pass `--platform` flag to `docker build` |
-| `make/photon/prepare/utils/docker_compose.py` | Detect `platform.machine()` and automatically insert `platform:` field into `docker-compose.yml` |
-| `make/photon/prepare/templates/docker_compose/docker-compose.yml.jinja` | Render per-service `platform:` field |
-| `make/prepare` | Support passing `VERSIONTAG` / `IMAGENAMESPACE` |
-| `make/build-multiarch.sh` | Build arm64 and amd64 images sequentially, then create a multi-arch manifest via `docker buildx imagetools create` |
-| `make/Readme.md` | Full build guide (build order, commands, namespace separation, push instructions) |
-| `.gitignore` | Add build artifact exclusions |
-
-### Built Images
-
-```
-cnapcloud/harbor-core:v2.15.10          # multi-arch manifest (arm64 + amd64)
-cnapcloud/harbor-core:v2.15.10-arm64
-cnapcloud/harbor-core:v2.15.10-amd64
-```
-
-> See [make/Readme.md](make/Readme.md) for full build instructions.
-
----
-
 ## Harbor Roadmap
 
 ### About this document
