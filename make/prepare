@@ -58,13 +58,35 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # Run prepare script
+PREPARE_IMAGE=${IMAGENAMESPACE:-goharbor}/prepare:${VERSIONTAG:-dev}
 docker run --rm -v $input_dir:/input \
                     -v $data_path:/data \
                     -v $harbor_prepare_path:/compose_location \
                     -v $config_dir:/config \
                     -v ${prepare_base_dir}:/hostfs${prepare_base_dir} \
+                    -e IMAGENAMESPACE=${IMAGENAMESPACE:-goharbor} \
                     --privileged \
-                    goharbor/prepare:dev prepare $@
+                    $PREPARE_IMAGE prepare $@
+
+# On macOS, virtiofs does not support file bind mounts on top of directory bind mounts.
+# Copy root.crt into config dir and remove the conflicting bind mount from docker-compose.yml.
+if [ "$(uname)" == "Darwin" ]; then
+    root_crt_src="${data_path}/secret/registry/root.crt"
+    root_crt_dst="${config_dir}/registry/root.crt"
+    if [ -f "$root_crt_src" ]; then
+        cp "$root_crt_src" "$root_crt_dst"
+    fi
+    compose_file="${harbor_prepare_path}/docker-compose.yml"
+    if [ -f "$compose_file" ]; then
+        python3 -c "
+import re, sys
+content = open('$compose_file').read()
+# Remove the bind mount block for root.crt
+content = re.sub(r'      - type: bind\n        source: [^\n]*/secret/registry/root\.crt\n        target: /etc/registry/root\.crt\n', '', content)
+open('$compose_file', 'w').write(content)
+"
+    fi
+fi
 
 echo "Clean up the input dir"
 # Clean up input dir
