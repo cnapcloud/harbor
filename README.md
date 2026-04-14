@@ -21,6 +21,7 @@ This repository is forked from [goharbor/harbor](https://github.com/goharbor/har
 cnapcloud/harbor-core:v2.15.10          # multi-arch manifest (arm64 + amd64)
 cnapcloud/harbor-core:v2.15.10-arm64
 cnapcloud/harbor-core:v2.15.10-amd64
+            :
 ```
 
 > See [make/Readme.md](make/Readme.md) for full build instructions.
