@@ -11,7 +11,7 @@ docker_compose_yml_path = '/compose_location/docker-compose.yml'
 # render docker-compose
 def prepare_docker_compose(configs, with_trivy):
     versions = parse_versions()
-    VERSION_TAG = versions.get('VERSION_TAG') or 'dev'
+    VERSION_TAG = os.environ.get('VERSIONTAG') or versions.get('VERSION_TAG') or 'dev'
 
     rendering_variables = {
         'image_namespace': os.environ.get('IMAGENAMESPACE', 'goharbor'),
