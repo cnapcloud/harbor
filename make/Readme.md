@@ -137,9 +137,27 @@ uname -m
 `docker-compose.yml`이 자동 생성됩니다.
 
 ```bash
-# make/harbor.yml 에서 hostname 수정
+# make/harbor.yml 에서 hostname 및 인증서 경로 수정
 vi make/harbor.yml
+```
 
+HTTPS를 사용하는 경우 인증서를 미리 준비해야 합니다:
+```yaml
+# make/harbor.yml
+https:
+  port: 443
+  certificate: /경로/to/fullchain.pem
+  private_key: /경로/to/privkey.pem
+```
+
+인증서가 없는 경우 Let's Encrypt, 또는 자체 서명 인증서를 생성해 사용할 수 있습니다:
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+  -keyout privkey.pem -out fullchain.pem \
+  -subj "/CN=<hostname>"
+```
+
+```bash
 # docker-compose.yml 생성 (TRIVYFLAG=true 없으면 trivy-adapter 서비스 제외됨)
 make prepare \
   VERSIONTAG=v2.15.0 \
