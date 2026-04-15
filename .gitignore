@@ -12,6 +12,7 @@ make/photon/core/harbor_core
 make/photon/jobservice/harbor_jobservice
 make/photon/registryctl/harbor_registryctl
 make/photon/registry/config.yml
+make/harbor-data/
 
 src/adminserver/adminserver
 src/core/core
