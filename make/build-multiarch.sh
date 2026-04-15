@@ -8,10 +8,10 @@ set -e
 DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$DIR"
 
-VERSIONTAG="${VERSIONTAG:-v2.15.10}"
+VERSIONTAG="${VERSIONTAG:-v2.15.0}"
 IMAGENAMESPACE="${IMAGENAMESPACE:-cnapcloud}"
 REGISTRYSERVER="${REGISTRYSERVER:-}"  # e.g. registry.example.com/
-TRIVYFLAG="${TRIVYFLAG:-false}"
+TRIVYFLAG="${TRIVYFLAG:-true}"
 
 IMAGES=(
   "harbor-log"
@@ -43,7 +43,7 @@ docker buildx inspect multiarch-builder &>/dev/null \
 docker buildx use multiarch-builder
 
 # ── Step 1: arm64 빌드 ────────────────────────────────────────────
-echo "[1/4] Compiling and building arm64..."
+echo "[1/3] Compiling and building arm64..."
 make compile \
   VERSIONTAG="$VERSIONTAG" \
   GOARCH=arm64
@@ -60,7 +60,7 @@ make build \
   TRIVYFLAG="$TRIVYFLAG"
 
 # ── Step 2: amd64 빌드 ────────────────────────────────────────────
-echo "[2/4] Compiling and building amd64..."
+echo "[2/3] Compiling and building amd64..."
 make compile \
   VERSIONTAG="$VERSIONTAG" \
   GOARCH=amd64
@@ -75,19 +75,15 @@ make build \
   PULL_BASE_FROM_DOCKERHUB=true \
   TRIVYFLAG="$TRIVYFLAG"
 
-# ── Step 3: push ──────────────────────────────────────────────────
-echo "[3/4] Pushing arch-tagged images..."
-for IMAGE in "${IMAGES[@]}"; do
-  docker push "${REGISTRYSERVER}${IMAGENAMESPACE}/${IMAGE}:${VERSIONTAG}-arm64"
-  docker push "${REGISTRYSERVER}${IMAGENAMESPACE}/${IMAGE}:${VERSIONTAG}-amd64"
-done
-
-# ── Step 4: multi-arch manifest ───────────────────────────────────
-echo "[4/4] Creating multi-arch manifests with buildx..."
+# ── Step 3: push multiarch images ─────────────────────────────────
+echo "[3/3] Pushing multiarch images..."
 for IMAGE in "${IMAGES[@]}"; do
   ARM64_TAG="${REGISTRYSERVER}${IMAGENAMESPACE}/${IMAGE}:${VERSIONTAG}-arm64"
   AMD64_TAG="${REGISTRYSERVER}${IMAGENAMESPACE}/${IMAGE}:${VERSIONTAG}-amd64"
   MANIFEST_TAG="${REGISTRYSERVER}${IMAGENAMESPACE}/${IMAGE}:${VERSIONTAG}"
+
+  docker push "$ARM64_TAG" --quiet
+  docker push "$AMD64_TAG" --quiet
 
   docker buildx imagetools create \
     -t "$MANIFEST_TAG" \
