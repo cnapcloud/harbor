@@ -152,9 +152,12 @@ https:
 
 인증서가 없는 경우 Let's Encrypt, 또는 자체 서명 인증서를 생성해 사용할 수 있습니다:
 ```bash
+cd make/cert
+HARBOR_HOST=harbor.cnap.dev
 openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
   -keyout privkey.pem -out fullchain.pem \
-  -subj "/CN=<hostname>"
+  -subj "/CN=${HARBOR_HOST}" \
+  -addext "subjectAltName=DNS:${HARBOR_HOST}"
 ```
 
 ```bash
