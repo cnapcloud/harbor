@@ -14,6 +14,7 @@ REGISTRYSERVER="${REGISTRYSERVER:-}"  # e.g. registry.example.com/
 TRIVYFLAG="${TRIVYFLAG:-true}"
 
 IMAGES=(
+  "prepare"
   "harbor-log"
   "registry-photon"
   "harbor-registryctl"
@@ -92,6 +93,13 @@ for IMAGE in "${IMAGES[@]}"; do
 
   echo "  ✔ $MANIFEST_TAG"
 done
+
+# ── Step 4: docker-compose.yml 생성 ───────────────────────────────
+echo "[4/4] Generating docker-compose.yml..."
+make prepare \
+  VERSIONTAG="$VERSIONTAG" \
+  IMAGENAMESPACE="$IMAGENAMESPACE" \
+  TRIVYFLAG="$TRIVYFLAG"
 
 echo ""
 echo "=== Multiarch build complete ==="
