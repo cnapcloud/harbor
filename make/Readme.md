@@ -176,14 +176,16 @@ services:
 
 ### Harbor 시작
 
+`make/common/config/` 하위 설정 파일이 root 소유로 생성되어 접근에 root 권한이 필요합니다.
+
 ```bash
-make start
+sudo make start
 ```
 
 ### Harbor 중지
 
 ```bash
-make down
+sudo make down
 ```
 
 ---
