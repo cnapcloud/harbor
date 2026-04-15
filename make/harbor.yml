@@ -2,15 +2,11 @@
 # hostname: Docker 레지스트리에 접속할 IP 또는 도메인 (localhost/127.0.0.1 불가)
 hostname: harbor.cnap.dev
 
-# HTTP only (HTTPS 미사용)
-http:
-  port: 80
-
 # https 비활성화 시 아래 블록 전체 주석 처리
-# https:
-#   port: 443
-#   certificate: /your/certificate/path
-#   private_key: /your/private/key/path
+https:
+ port: 443
+   certificate: ./make/cert/fullchain.pem
+   private_key: ./make/cert/private_key.pem
 
 # 초기 admin 비밀번호 (최초 설치 시에만 적용, 이후 UI에서 변경)
 harbor_admin_password: Harbor12345
@@ -24,7 +20,7 @@ database:
   conn_max_idle_time: 0
 
 # 데이터 저장 경로
-data_volume: /Users/lemon/harbor-data
+data_volume: ./make/harbor-data
 
 trivy:
   ignore_unfixed: false
