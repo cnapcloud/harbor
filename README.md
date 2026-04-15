@@ -2,6 +2,8 @@
 
 This repository is forked from [goharbor/harbor](https://github.com/goharbor/harbor) at tag `v2.15.0`, with **arm64 / amd64 multi-architecture build support** added on the `multiarch` branch.
 
+Pre-built multiarch images are available on Docker Hub at [hub.docker.com/repositories/cnapcloud](https://hub.docker.com/repositories/cnapcloud).
+
 ### Summary of Changes
 
 | File | Change |
